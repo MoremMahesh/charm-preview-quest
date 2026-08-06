@@ -1,24 +1,31 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Shell } from "@/components/control-tower/Shell";
+import { ExecutiveSummary } from "@/components/control-tower/ExecutiveSummary";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Executive Summary — Production Control Tower" },
+      {
+        name: "description",
+        content:
+          "30-day production feasibility, risk days, component shortages and automated supply alerts for MAGNUS EV variants.",
+      },
+      { property: "og:title", content: "Executive Summary — Production Control Tower" },
+      {
+        property: "og:description",
+        content:
+          "Track feasible days, production loss exposure and critical component risk across MAGNUS GMAX, NEO and PLUS.",
+      },
+    ],
+  }),
+  component: ExecPage,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function ExecPage() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <Shell title="Executive Summary">
+      <ExecutiveSummary />
+    </Shell>
   );
 }
