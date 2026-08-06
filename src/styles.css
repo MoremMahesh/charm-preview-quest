@@ -77,6 +77,19 @@
 
 :root {
   --radius: 0.625rem;
+  --ct-canvas: #f4f5f7;
+  --ct-ink: #1f2430;
+  --ct-shell: #181c2b;
+  --ct-shell-hi: #26294a;
+  --ct-shell-dim: #b7bbcf;
+  --ct-shell-mute: #5c6079;
+  --ct-accent: #4f46e5;
+  --ct-line: #e6e8ee;
+  --ct-line-soft: #eceef2;
+  --ct-muted: #6b7280;
+  --ct-green: #1a9d5c;
+  --ct-amber: #c07a12;
+  --ct-red: #dc2f2b;
   --background: oklch(1 0 0);
   --foreground: oklch(0.129 0.042 264.695);
   --card: oklch(1 0 0);
