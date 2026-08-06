@@ -38,7 +38,21 @@ export function CalendarScreen() {
             <select
               className="min-w-[170px] rounded-lg border border-[#dcdfe6] bg-white px-2 py-1.5 text-[12px]"
               value={calVariant}
-              onChange={(e) => set({ selectedVariant: e.target.value as VariantKey })}
+              onChange={(e) => {
+                const variant = e.target.value as VariantKey;
+
+                const firstRiskDay: Record<VariantKey, number> = {
+                  all: 12,
+                  gmax: 12,
+                  neo: 19,
+                  plus: 20,
+                };
+
+                set({
+                  selectedVariant: variant,
+                  selectedDay: firstRiskDay[variant],
+                });
+              }}
             >
               {CALENDAR_VARIANT_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -78,9 +92,8 @@ export function CalendarScreen() {
                 <div
                   key={day}
                   onClick={clickable ? () => set({ selectedDay: day }) : undefined}
-                  className={`min-h-[56px] rounded-[8px] border-[1.25px] px-2 py-1.5 ${
-                    clickable ? "cursor-pointer" : "cursor-default"
-                  }`}
+                  className={`min-h-[56px] rounded-[8px] border-[1.25px] px-2 py-1.5 ${clickable ? "cursor-pointer" : "cursor-default"
+                    }`}
                   style={{
                     borderColor: selected ? "#4f46e5" : "#eceef2",
                     background: tint(c),
