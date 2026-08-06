@@ -244,7 +244,7 @@ function PlanChart() {
             <div key={d.day} className="flex flex-none flex-col items-center gap-1.5">
               <div className="flex items-end gap-[3px]">
                 <div
-                  className="rounded-t-[3px] bg-[#dfe2e9]"
+                  className="rounded-t-[3px] bg-[#4f46e5]"
                   style={{ height: scale(d.plan), width: chartExpanded ? "10px" : "16px" }}
                 />
                 <div
