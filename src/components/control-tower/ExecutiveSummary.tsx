@@ -225,7 +225,7 @@ function PlanChart() {
 
       <div className="mt-2 flex gap-4 text-[11.5px] text-ct-muted">
         <span className="flex items-center gap-1.5">
-          <i className="inline-block h-2 w-2 rounded-sm bg-[#c9cdd8]" />
+          <i className="inline-block h-2 w-2 rounded-sm bg-[#4f46e5]" />
           Planned
         </span>
         <span className="flex items-center gap-1.5">
