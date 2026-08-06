@@ -57,7 +57,7 @@ export function ControlTowerProvider({ children }: { children: ReactNode }) {
     const calVariant: VariantKey =
       state.selectedVariant === "all" ? "gmax" : state.selectedVariant;
     const calStatuses = CAL_STATUS_BY_VARIANT[calVariant];
-    const detail = DETAIL[state.selectedDay] ?? DETAIL[12];
+    const detail = (DETAIL[state.selectedDay] ?? DETAIL[12]) as DayDetail;
 
     return {
       ...state,
