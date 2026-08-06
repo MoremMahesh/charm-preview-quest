@@ -59,6 +59,20 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-ct-canvas: var(--ct-canvas);
+  --color-ct-ink: var(--ct-ink);
+  --color-ct-shell: var(--ct-shell);
+  --color-ct-shell-hi: var(--ct-shell-hi);
+  --color-ct-shell-dim: var(--ct-shell-dim);
+  --color-ct-shell-mute: var(--ct-shell-mute);
+  --color-ct-accent: var(--ct-accent);
+  --color-ct-line: var(--ct-line);
+  --color-ct-line-soft: var(--ct-line-soft);
+  --color-ct-muted: var(--ct-muted);
+  --color-ct-green: var(--ct-green);
+  --color-ct-amber: var(--ct-amber);
+  --color-ct-red: var(--ct-red);
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
