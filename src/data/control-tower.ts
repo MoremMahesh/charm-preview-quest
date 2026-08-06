@@ -249,7 +249,7 @@ function buildChart(variantKey: VariantKey): ChartPoint[] {
   const base = VARIANT_BASE[variantKey];
   return Array.from({ length: 30 }, (_, i) => {
     const day = i + 1;
-    const st = statuses[day];
+    const st = statuses[day] as Status;
     const plan = Math.round(base - (day % 5) * (base * 0.008));
     const factor =
       st === "red"
