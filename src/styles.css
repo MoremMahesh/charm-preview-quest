@@ -166,6 +166,7 @@
 
   body {
     background-color: var(--color-background);
+    font-family: var(--font-sans);
     color: var(--color-foreground);
   }
 }
