@@ -19,54 +19,57 @@ export function CalendarScreen() {
   const color = statusColor(dayStatus);
 
   return (
-    <div className="flex flex-col gap-4 max-h-[80vh] overflow-auto p-5">
-      <div>
-        <Link to="/" className="text-[12px] font-semibold text-ct-accent">
-          ← Back to executive summary
-        </Link>
-        <p className="mt-1 text-[13px] leading-5 text-ct-muted">
-          Aug {selectedDay} is the selected {dayStatus === "red" ? "stop-risk" : "watch"} day for{' '}
-          {VARIANT_LABEL[calVariant]}, exposing {detail.loss} vehicles.
-        </p>
+    <div className="flex h-[80vh] flex-col gap-2 overflow-hidden p-3">
+      {/* Compact header row: back link + description + variant selector all inline */}
+      <div className="flex flex-none flex-wrap items-center justify-between gap-x-4 gap-y-1">
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+          <Link to="/" className="text-[11px] font-semibold whitespace-nowrap text-ct-accent">
+            ← Back to executive summary
+          </Link>
+          <p className="text-[11.5px] leading-4 text-ct-muted">
+            Aug {selectedDay} is the selected {dayStatus === "red" ? "stop-risk" : "watch"} day for{' '}
+            {VARIANT_LABEL[calVariant]}, exposing {detail.loss} vehicles.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-1.5">
+          <label className="text-[10px] font-semibold tracking-[0.03em] text-ct-muted uppercase whitespace-nowrap">
+            Variant
+          </label>
+          <select
+            className="rounded-lg border border-[#dcdfe6] bg-white px-2 py-1 pr-6 text-[11.5px]"
+            value={calVariant}
+            onChange={(e) => set({ selectedVariant: e.target.value as VariantKey })}
+          >
+            {CALENDAR_VARIANT_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      <div className="max-w-[260px]">
-        <label className="text-[10px] font-semibold tracking-[0.03em] text-ct-muted uppercase">
-          Vehicle Variant
-        </label>
-        <select
-          className="mt-1 w-full rounded-lg border border-[#dcdfe6] bg-white px-2 py-1.5 pr-6 text-[12px]"
-          value={calVariant}
-          onChange={(e) => set({ selectedVariant: e.target.value as VariantKey })}
-        >
-          {CALENDAR_VARIANT_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>
-              {o.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-        <div className="min-w-0 rounded-xl border border-ct-line bg-white p-5 shadow-[0_1px_2px_rgba(16,24,40,.04)]">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="text-[14px] font-bold">
+      <div className="grid min-h-0 flex-1 min-w-0 gap-3 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+        <div className="flex min-h-0 min-w-0 flex-col rounded-xl border border-ct-line bg-white p-3 shadow-[0_1px_2px_rgba(16,24,40,.04)]">
+          <div className="flex flex-none flex-wrap items-center justify-between gap-2">
+            <div className="text-[13px] font-bold">
               August 2026 — {VARIANT_LABEL[calVariant]}
             </div>
-            <span className="text-[11.5px] text-ct-muted">
+            <span className="text-[10.5px] text-ct-muted">
               Click a Red/Amber day to drill into root cause
             </span>
           </div>
 
-          <div className="mt-4 grid grid-cols-7 gap-2 text-center text-[10.5px] font-bold tracking-[0.04em] text-ct-muted">
+          <div className="mt-2 flex-none grid grid-cols-7 gap-1.5 text-center text-[10px] font-bold tracking-[0.04em] text-ct-muted">
             {["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"].map((d) => (
               <div key={d}>{d}</div>
             ))}
           </div>
 
-          <div className="mt-2 grid grid-cols-7 gap-1.5">
+          <div className="mt-1.5 grid flex-1 min-h-0 grid-cols-7 auto-rows-fr gap-1">
             {GRID.map((day, i) => {
-              if (!day) return <div key={`e${i}`} className="min-h-[66px]" />;
+              if (!day) return <div key={`e${i}`} />;
               const st = calStatuses[day] ?? "green";
               const c = statusColor(st);
               const selected = day === selectedDay;
@@ -75,7 +78,7 @@ export function CalendarScreen() {
                 <div
                   key={day}
                   onClick={clickable ? () => set({ selectedDay: day }) : undefined}
-                  className={`min-h-[66px] rounded-[8px] border-[1.25px] px-2.5 py-2 ${
+                  className={`flex flex-col rounded-[7px] border-[1.25px] px-1.5 py-1 ${
                     clickable ? "cursor-pointer" : "cursor-default"
                   }`}
                   style={{
@@ -83,18 +86,18 @@ export function CalendarScreen() {
                     background: tint(c),
                   }}
                 >
-                  <div className="text-[11px] font-bold">{day}</div>
-                  <div className="mt-1 flex items-center gap-1">
+                  <div className="text-[10px] font-bold leading-tight">{day}</div>
+                  <div className="mt-0.5 flex items-center gap-1">
                     <i
                       className="inline-block h-1.5 w-1.5 flex-none rounded-full"
                       style={{ background: c }}
                     />
-                    <span className="text-[9px] font-bold" style={{ color: c }}>
+                    <span className="text-[8.5px] font-bold leading-none" style={{ color: c }}>
                       {statusLabel(st)}
                     </span>
                   </div>
                   {TREND[day] && (
-                    <div className="mt-1 text-[9px] leading-tight text-ct-muted">
+                    <div className="mt-0.5 line-clamp-2 text-[8.5px] leading-tight text-ct-muted">
                       {TREND[day]}
                     </div>
                   )}
@@ -103,7 +106,7 @@ export function CalendarScreen() {
             })}
           </div>
 
-          <div className="mt-4 flex flex-wrap gap-3 text-[11px] text-ct-muted">
+          <div className="mt-2 flex-none flex flex-wrap gap-3 text-[10.5px] text-ct-muted">
             {[
               [GREEN, "Production achievable"],
               [AMBER, "Risk developing"],
@@ -117,42 +120,42 @@ export function CalendarScreen() {
           </div>
         </div>
 
-        <div className="min-w-0 overflow-hidden rounded-xl border border-ct-line bg-white shadow-[0_1px_2px_rgba(16,24,40,.04)]">
+        <div className="min-h-0 min-w-0 overflow-auto rounded-xl border border-ct-line bg-white shadow-[0_1px_2px_rgba(16,24,40,.04)]">
           <div className="h-1.5 w-full" style={{ background: color }} />
-          <div className="p-5">
-            <div className="text-[11px] font-bold tracking-[0.04em] text-ct-muted uppercase">
+          <div className="p-4">
+            <div className="text-[10.5px] font-bold tracking-[0.04em] text-ct-muted uppercase">
               Production risk identified
             </div>
-            <div className="mt-1 text-[20px] font-extrabold">Aug {selectedDay}</div>
+            <div className="mt-1 text-[18px] font-extrabold">Aug {selectedDay}</div>
 
-            <div className="mt-4 text-[11px] font-bold tracking-[0.04em] text-ct-muted uppercase">
+            <div className="mt-3 text-[10.5px] font-bold tracking-[0.04em] text-ct-muted uppercase">
               Affected variant
             </div>
-            <div className="text-[13.5px] font-semibold">{detail.variant}</div>
+            <div className="text-[13px] font-semibold">{detail.variant}</div>
 
-            <div className="mt-4 text-[11px] font-bold tracking-[0.04em] text-ct-muted uppercase">
+            <div className="mt-3 text-[10.5px] font-bold tracking-[0.04em] text-ct-muted uppercase">
               Projected production loss
             </div>
-            <div className="text-[13.5px] font-semibold">{detail.loss} vehicles</div>
+            <div className="text-[13px] font-semibold">{detail.loss} vehicles</div>
 
-            <div className="mt-4 rounded-[10px] border border-ct-line bg-[#fafbfc] px-3.5 py-3">
-              <div className="text-[11px] font-bold tracking-[0.04em] text-ct-muted uppercase">
+            <div className="mt-3 rounded-[10px] border border-ct-line bg-[#fafbfc] px-3 py-2.5">
+              <div className="text-[10.5px] font-bold tracking-[0.04em] text-ct-muted uppercase">
                 Critical component
               </div>
-              <div className="mt-1 text-[13px] font-bold">{detail.component}</div>
-              <div className="mt-1.5 text-[12px] text-ct-muted">
+              <div className="mt-1 text-[12.5px] font-bold">{detail.component}</div>
+              <div className="mt-1 text-[11.5px] text-ct-muted">
                 {TREND[selectedDay] ?? "No status change in the last 24 hours."}
               </div>
             </div>
 
             <button
               onClick={() => set({ modalOpen: true })}
-              className="mt-4 w-full rounded-lg bg-ct-shell px-4 py-2.5 text-[13px] font-semibold text-white"
+              className="mt-3 w-full rounded-lg bg-ct-shell px-4 py-2 text-[12.5px] font-semibold text-white"
             >
               OPEN ROOT CAUSE →
             </button>
 
-            <div className="mt-4">
+            <div className="mt-3">
               <span
                 className="rounded-full px-3 py-1.5 text-[11px] font-bold"
                 style={{ background: tint(color), color }}
