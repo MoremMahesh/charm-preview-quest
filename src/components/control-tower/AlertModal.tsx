@@ -1,4 +1,5 @@
 import { tint } from "@/data/control-tower";
+import { X, BellRing, CheckCircle2 } from "lucide-react";
 import { useControlTower } from "./state";
 
 export function AlertModal() {
@@ -27,9 +28,9 @@ export function AlertModal() {
             </div>
             <button
               onClick={() => set({ activeAlertId: null })}
-              className="text-[12.5px] font-semibold text-ct-muted"
+              className="flex items-center gap-1 text-[12.5px] font-semibold text-ct-muted hover:text-ct-ink"
             >
-              Close ✕
+              <X size={15} /> Close
             </button>
           </div>
 
@@ -50,17 +51,17 @@ export function AlertModal() {
           </div>
           <div className="text-[13px] text-ct-muted">{activeAlert.pushed}</div>
           {done && (
-            <div className="mt-2 text-[13px] font-semibold text-ct-green">
-              Push notification re-sent just now ✓
+            <div className="mt-2 flex items-center gap-1.5 text-[13px] font-semibold text-ct-green">
+              <CheckCircle2 size={14} /> Push notification re-sent just now
             </div>
           )}
 
           <div className="mt-6 flex flex-wrap gap-2.5">
             <button
               onClick={() => repushAlert(activeAlert.id)}
-              className="rounded-lg bg-ct-shell px-4 py-2.5 text-[13px] font-semibold text-white"
+              className="flex items-center gap-1.5 rounded-lg bg-ct-shell px-4 py-2.5 text-[13px] font-semibold text-white"
             >
-              🔔 Push notification again
+              <BellRing size={15} /> Push notification again
             </button>
             {activeAlert.notifiable && (
               <button className="rounded-lg border border-ct-line px-4 py-2.5 text-[13px] font-semibold">
