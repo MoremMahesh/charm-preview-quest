@@ -1,5 +1,11 @@
 import { useNavigate } from "@tanstack/react-router";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   ACH_GREEN,
   AMBER,
   CATEGORY_OPTIONS,
@@ -14,6 +20,7 @@ import {
   VARIANT_LABEL,
   VARIANT_OPTIONS,
   VARIANT_SUBTITLE,
+  statusLabel,
   tint,
   type VariantKey,
 } from "@/data/control-tower";
@@ -234,41 +241,70 @@ function PlanChart() {
         </span>
       </div>
 
-      <div
-        className="mt-4 flex items-end overflow-x-auto"
-        style={{ gap: chartExpanded ? "8px" : "16px" }}
-      >
-        {shown.map((d) => {
-          const achColor = d.status === "red" ? RED : d.status === "amber" ? AMBER : ACH_GREEN;
-          return (
-            <div key={d.day} className="flex flex-none flex-col items-center gap-1.5">
-              <div className="flex items-end gap-[3px]">
-                <div
-                  className="rounded-t-[3px] bg-[#4f46e5]"
-                  style={{ height: scale(d.plan), width: chartExpanded ? "10px" : "16px" }}
-                />
-                <div
-                  className="rounded-t-[3px]"
-                  style={{
-                    height: scale(d.ach),
-                    width: chartExpanded ? "10px" : "16px",
-                    background: achColor,
-                  }}
-                />
-              </div>
-              <div
-                className="text-[10px] whitespace-nowrap"
-                style={{
-                  color: d.status === "red" ? RED : d.status === "amber" ? AMBER : "#4b5262",
-                  fontWeight: d.status !== "green" ? 700 : 400,
-                }}
-              >
-                {d.label}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      <TooltipProvider delayDuration={0}>
+        <div
+          className="mt-4 flex items-end overflow-x-auto"
+          style={{ gap: chartExpanded ? "8px" : "16px" }}
+        >
+          {shown.map((d) => {
+            const achColor = d.status === "red" ? RED : d.status === "amber" ? AMBER : ACH_GREEN;
+            return (
+              <Tooltip key={d.day}>
+                <TooltipTrigger asChild>
+                  <div className="flex flex-none flex-col items-center gap-1.5">
+                    <div className="flex items-end gap-[3px]">
+                      <div
+                        className="rounded-t-[3px] bg-[#4f46e5]"
+                        style={{ height: scale(d.plan), width: chartExpanded ? "10px" : "16px" }}
+                      />
+                      <div
+                        className="rounded-t-[3px]"
+                        style={{
+                          height: scale(d.ach),
+                          width: chartExpanded ? "10px" : "16px",
+                          background: achColor,
+                        }}
+                      />
+                    </div>
+                    <div
+                      className="text-[10px] whitespace-nowrap"
+                      style={{
+                        color: d.status === "red" ? RED : d.status === "amber" ? AMBER : "#4b5262",
+                        fontWeight: d.status !== "green" ? 700 : 400,
+                      }}
+                    >
+                      {d.label}
+                    </div>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="top"
+                  align="center"
+                  className="max-w-[14rem] rounded-xl border border-border bg-background px-3 py-2 text-[11px] text-foreground shadow-xl"
+                >
+                  <div className="font-semibold">Aug {d.day}</div>
+                  <div className="mt-1 grid gap-1 text-ct-muted">
+                    <div className="flex justify-between gap-2">
+                      <span>Planned</span>
+                      <span className="font-semibold text-foreground">{d.plan.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between gap-2">
+                      <span>Achievable</span>
+                      <span className="font-semibold text-foreground">{d.ach.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between gap-2">
+                      <span>Status</span>
+                      <span className="font-semibold" style={{ color: achColor }}>
+                        {statusLabel(d.status)}
+                      </span>
+                    </div>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            );
+          })}
+        </div>
+      </TooltipProvider>
 
       <div className="mt-4 text-[12px] text-ct-muted">{CHART_NOTE[selectedVariant]}</div>
     </div>

@@ -12,6 +12,12 @@ import {
   tint,
   type VariantKey,
 } from "@/data/control-tower";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useControlTower } from "./state";
 
 export function CalendarScreen() {
@@ -81,43 +87,73 @@ export function CalendarScreen() {
             ))}
           </div>
 
-          <div className="mt-2 grid grid-cols-7 gap-1.5">
-            {GRID.map((day, i) => {
-              if (!day) return <div key={`e${i}`} className="min-h-[56px]" />;
-              const st = calStatuses[day] ?? "green";
-              const c = statusColor(st);
-              const selected = day === selectedDay;
-              const clickable = st !== "green";
-              return (
-                <div
-                  key={day}
-                  onClick={clickable ? () => set({ selectedDay: day }) : undefined}
-                  className={`min-h-[56px] rounded-[8px] border-[1.25px] px-2 py-1.5 ${clickable ? "cursor-pointer" : "cursor-default"
-                    }`}
-                  style={{
-                    borderColor: selected ? "#4f46e5" : "#eceef2",
-                    background: tint(c),
-                  }}
-                >
-                  <div className="text-[11px] font-bold">{day}</div>
-                  <div className="mt-1 flex items-center gap-1">
-                    <i
-                      className="inline-block h-1.5 w-1.5 flex-none rounded-full"
-                      style={{ background: c }}
-                    />
-                    <span className="text-[8.5px] font-bold" style={{ color: c }}>
-                      {statusLabel(st)}
-                    </span>
-                  </div>
-                  {TREND[day] && (
-                    <div className="mt-1 text-[8.5px] leading-tight text-ct-muted">
-                      {TREND[day]}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          <TooltipProvider delayDuration={0}>
+            <div className="mt-2 grid grid-cols-7 gap-1.5">
+              {GRID.map((day, i) => {
+                if (!day) return <div key={`e${i}`} className="min-h-[56px]" />;
+                const st = calStatuses[day] ?? "green";
+                const c = statusColor(st);
+                const selected = day === selectedDay;
+                const clickable = st !== "green";
+                return (
+                  <Tooltip key={day}>
+                    <TooltipTrigger asChild>
+                      <div
+                        onClick={clickable ? () => set({ selectedDay: day }) : undefined}
+                        className={`min-h-[56px] rounded-[8px] border-[1.25px] px-2 py-1.5 ${clickable ? "cursor-pointer" : "cursor-default"
+                          }`}
+                        style={{
+                          borderColor: selected ? "#4f46e5" : "#eceef2",
+                          background: tint(c),
+                        }}
+                      >
+                        <div className="text-[11px] font-bold">{day}</div>
+                        <div className="mt-1 flex items-center gap-1">
+                          <i
+                            className="inline-block h-1.5 w-1.5 flex-none rounded-full"
+                            style={{ background: c }}
+                          />
+                          <span className="text-[8.5px] font-bold" style={{ color: c }}>
+                            {statusLabel(st)}
+                          </span>
+                        </div>
+                        {TREND[day] && (
+                          <div className="mt-1 text-[8.5px] leading-tight text-ct-muted">
+                            {TREND[day]}
+                          </div>
+                        )}
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side="top"
+                      align="center"
+                      className="max-w-[14rem] rounded-xl border border-border bg-background px-3 py-2 text-[11px] text-foreground shadow-xl"
+                    >
+                      <div className="font-semibold">Aug {day}</div>
+                      <div className="mt-1 grid gap-1 text-ct-muted">
+                        <div className="flex justify-between gap-2">
+                          <span>Status</span>
+                          <span className="font-semibold" style={{ color: c }}>
+                            {statusLabel(st)}
+                          </span>
+                        </div>
+                        {TREND[day] ? (
+                          <div className="text-[11px] text-ct-muted">{TREND[day]}</div>
+                        ) : (
+                          <div className="text-[11px] text-ct-muted">No recent change detected.</div>
+                        )}
+                        {clickable && (
+                          <div className="text-[11px] text-ct-muted">
+                            Click to drill into root cause.
+                          </div>
+                        )}
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                );
+              })}
+            </div>
+          </TooltipProvider>
 
           <div className="mt-3 flex flex-wrap gap-2 text-[10px] text-ct-muted">
             {[
