@@ -5,7 +5,8 @@ import {
   GREEN,
   AMBER,
   RED,
-  TREND,
+  trendFor,
+  firstRiskDay,
   VARIANT_LABEL,
   statusColor,
   statusLabel,
@@ -18,6 +19,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useControlTower } from "./state";
 
 export function CalendarScreen() {
@@ -30,11 +32,14 @@ export function CalendarScreen() {
         {/* <div className="text-[14px] font-bold">30-Day Production Calendar</div> */}
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex flex-wrap items-center gap-2 text-[12px]">
-            <Link to="/" className="font-semibold text-ct-accent">
-              ← Back
+            <Link to="/" className="flex items-center gap-1 font-semibold text-ct-accent">
+              <ArrowLeft size={14} /> Back
             </Link>
             <span className="text-ct-muted">
-              Selected {dayStatus === "red" ? "stop-risk" : "watch"}: Aug {selectedDay} ({detail.loss} vehicles)
+              Selected{" "}
+              {dayStatus === "red" ? "stop-risk" : dayStatus === "amber" ? "watch" : "day"}: Aug{" "}
+              {selectedDay}
+              {dayStatus === "red" ? ` (${detail.loss} vehicles at risk)` : ""}
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -47,16 +52,9 @@ export function CalendarScreen() {
               onChange={(e) => {
                 const variant = e.target.value as VariantKey;
 
-                const firstRiskDay: Record<VariantKey, number> = {
-                  all: 12,
-                  gmax: 12,
-                  neo: 19,
-                  plus: 20,
-                };
-
                 set({
                   selectedVariant: variant,
-                  selectedDay: firstRiskDay[variant],
+                  selectedDay: firstRiskDay(variant),
                 });
               }}
             >
@@ -117,9 +115,9 @@ export function CalendarScreen() {
                             {statusLabel(st)}
                           </span>
                         </div>
-                        {TREND[day] && (
+                        {trendFor(calVariant, day) && (
                           <div className="mt-1 text-[8.5px] leading-tight text-ct-muted">
-                            {TREND[day]}
+                            {trendFor(calVariant, day)}
                           </div>
                         )}
                       </div>
@@ -137,8 +135,8 @@ export function CalendarScreen() {
                             {statusLabel(st)}
                           </span>
                         </div>
-                        {TREND[day] ? (
-                          <div className="text-[11px] text-ct-muted">{TREND[day]}</div>
+                        {trendFor(calVariant, day) ? (
+                          <div className="text-[11px] text-ct-muted">{trendFor(calVariant, day)}</div>
                         ) : (
                           <div className="text-[11px] text-ct-muted">No recent change detected.</div>
                         )}
@@ -185,7 +183,10 @@ export function CalendarScreen() {
             <div className="mt-4 text-[11px] font-bold tracking-[0.04em] text-ct-muted uppercase">
               Projected production loss
             </div>
-            <div className="text-[13.5px] font-semibold">{detail.loss} vehicles</div>
+            <div className="text-[13.5px] font-semibold">
+              {detail.loss} vehicles
+              {detail.loss === 0 ? " — plan fully achievable" : ""}
+            </div>
 
             <div className="mt-4 rounded-[10px] border border-ct-line bg-[#fafbfc] px-3.5 py-3">
               <div className="text-[11px] font-bold tracking-[0.04em] text-ct-muted uppercase">
@@ -193,15 +194,15 @@ export function CalendarScreen() {
               </div>
               <div className="mt-1 text-[13px] font-bold">{detail.component}</div>
               <div className="mt-1.5 text-[12px] text-ct-muted">
-                {TREND[selectedDay] ?? "No status change in the last 24 hours."}
+                {trendFor(calVariant, selectedDay) ?? "No status change in the last 24 hours."}
               </div>
             </div>
 
             <button
               onClick={() => set({ modalOpen: true })}
-              className="mt-4 w-full rounded-lg bg-ct-shell px-4 py-2.5 text-[13px] font-semibold text-white"
+              className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-lg bg-ct-shell px-4 py-2.5 text-[13px] font-semibold text-white"
             >
-              OPEN ROOT CAUSE →
+              OPEN ROOT CAUSE <ArrowRight size={14} />
             </button>
 
             <div className="mt-4">

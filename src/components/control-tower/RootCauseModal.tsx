@@ -1,13 +1,23 @@
-import { statusColor, statusLabel, tint, TREND, RED, GREEN, AMBER } from "@/data/control-tower";
+import { statusColor, statusLabel, tint, trendFor, RED, GREEN, AMBER } from "@/data/control-tower";
+import { X, BellRing, CheckCircle2 } from "lucide-react";
 import { useControlTower } from "./state";
 
 export function RootCauseModal() {
-  const { modalOpen, set, detail, selectedDay, dayStatus, poNotified, notifyPoVendor } =
-    useControlTower();
+  const {
+    modalOpen,
+    set,
+    detail,
+    selectedDay,
+    dayStatus,
+    poNotified,
+    notifyPoVendor,
+    poNotifyKey,
+    calVariant,
+  } = useControlTower();
   if (!modalOpen) return null;
 
   const color = statusColor(dayStatus);
-  const showNotify = detail.po.badge === "Delayed" && !poNotified[selectedDay];
+  const showNotify = detail.po.badge === "Delayed" && !poNotified[poNotifyKey];
 
   return (
     <div
@@ -24,9 +34,9 @@ export function RootCauseModal() {
             <div className="text-[17px] font-bold">Root cause — Aug {selectedDay}</div>
             <button
               onClick={() => set({ modalOpen: false })}
-              className="text-[12.5px] font-semibold text-ct-muted"
+              className="flex items-center gap-1 text-[12.5px] font-semibold text-ct-muted hover:text-ct-ink"
             >
-              Close ✕
+              <X size={15} /> Close
             </button>
           </div>
           <p className="mt-2 text-[13.5px] text-ct-muted">
@@ -98,15 +108,17 @@ export function RootCauseModal() {
               >
                 {detail.po.badge}
               </span>
-              {poNotified[selectedDay] && (
-                <span className="text-[12px] font-semibold text-ct-green">Vendor notified ✓</span>
+              {poNotified[poNotifyKey] && (
+                <span className="flex items-center gap-1 text-[12px] font-semibold text-ct-green">
+                  <CheckCircle2 size={14} /> Vendor notified
+                </span>
               )}
               {showNotify && (
                 <button
                   onClick={notifyPoVendor}
-                  className="rounded-lg bg-ct-shell px-3.5 py-2 text-[12.5px] font-semibold text-white"
+                  className="flex items-center gap-1.5 rounded-lg bg-ct-shell px-3.5 py-2 text-[12.5px] font-semibold text-white"
                 >
-                  Notify vendor →
+                  <BellRing size={14} /> Notify vendor
                 </button>
               )}
             </div>
@@ -116,7 +128,7 @@ export function RootCauseModal() {
             Trend
           </div>
           <div className="text-[13px]">
-            {TREND[selectedDay] ?? "No status change in the last 24 hours."}
+            {trendFor(calVariant, selectedDay) ?? "No status change in the last 24 hours."}
           </div>
 
           <div className="mt-5">
