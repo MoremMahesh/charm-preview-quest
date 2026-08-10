@@ -10,12 +10,12 @@ import {
   AMBER,
   CATEGORY_OPTIONS,
   CHARTS,
+  CHART_MAX,
   CHART_NOTE,
   CAL_STATUS_BY_VARIANT,
   GREEN,
   PLANT_OPTIONS,
   RED,
-  VARIANT_BASE,
   VARIANT_KPIS,
   VARIANT_LABEL,
   VARIANT_OPTIONS,
@@ -24,6 +24,12 @@ import {
   tint,
   type VariantKey,
 } from "@/data/control-tower";
+import {
+  CalendarDays,
+  Maximize2,
+  Minimize2,
+  AlertTriangle,
+} from "lucide-react";
 import { useControlTower } from "./state";
 
 const selectClass =
@@ -96,9 +102,9 @@ function FilterBar() {
         <div className="border-t border-ct-line-soft pt-3.5 text-right">
           <button
             onClick={() => navigate({ to: "/calendar" })}
-            className="rounded-lg bg-ct-shell px-4.5 py-2.5 text-[13px] font-semibold text-white"
+            className="inline-flex items-center gap-2 rounded-lg bg-ct-shell px-4.5 py-2.5 text-[13px] font-semibold text-white"
           >
-            📅 30-Day Calendar
+            <CalendarDays size={15} /> 30-Day Calendar
           </button>
         </div>
       )}
@@ -207,8 +213,8 @@ function KpiRow() {
 
 function PlanChart() {
   const { selectedVariant, chartExpanded, set, variantLabel } = useControlTower();
-  const base = VARIANT_BASE[selectedVariant];
-  const scale = (v: number) => Math.max(4, Math.round((v / base) * 180));
+  const max = CHART_MAX[selectedVariant];
+  const scale = (v: number) => Math.max(4, Math.round((v / max) * 180));
   const points = CHARTS[selectedVariant];
   const shown = chartExpanded ? points : points.slice(0, 10);
 
@@ -225,7 +231,7 @@ function PlanChart() {
             title={chartExpanded ? "Restore" : "Expand to 30 days"}
             className="rounded-md border border-ct-line px-2 py-1 text-[12px]"
           >
-            {chartExpanded ? "⤡" : "⤢"}
+            {chartExpanded ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
           </button>
         </div>
       </div>
@@ -316,7 +322,10 @@ function AlertsPanel() {
   return (
     <div className="min-w-0 rounded-xl border border-ct-line bg-white p-5 shadow-[0_1px_2px_rgba(16,24,40,.04)]">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="text-[14px] font-bold">Automated alerts — {variantLabel}</div>
+        <div className="flex items-center gap-2 text-[14px] font-bold">
+          <AlertTriangle size={15} className="text-ct-red" />
+          Automated alerts — {variantLabel}
+        </div>
         <span className="rounded-full bg-[#f1f2f6] px-2 py-1 text-[11px] font-semibold text-ct-muted">
           {filteredAlerts.length} open
         </span>

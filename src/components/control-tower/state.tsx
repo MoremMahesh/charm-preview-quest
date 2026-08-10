@@ -2,8 +2,8 @@ import { createContext, useContext, useMemo, useState, type ReactNode } from "re
 import {
   ALERTS,
   CAL_STATUS_BY_VARIANT,
-  DETAIL,
   VARIANT_LABEL,
+  getDayDetail,
   type Alert,
   type DayDetail,
   type Status,
@@ -17,7 +17,7 @@ type CtState = {
   selectedPlant: string;
   modalOpen: boolean;
   activeAlertId: string | null;
-  poNotified: Record<number, boolean>;
+  poNotified: Record<string, boolean>;
   repushed: Record<string, boolean>;
   chartExpanded: boolean;
   hoveredChip: "amber" | "red" | null;
@@ -30,6 +30,7 @@ type CtContextValue = CtState & {
   variantLabel: string;
   detail: DayDetail;
   dayStatus: Status;
+  poNotifyKey: string;
   filteredAlerts: Alert[];
   activeAlert: Alert | undefined;
   notifyPoVendor: () => void;
@@ -57,43 +58,25 @@ export function ControlTowerProvider({ children }: { children: ReactNode }) {
     const calVariant: VariantKey =
       state.selectedVariant === "all" ? "gmax" : state.selectedVariant;
     const calStatuses = CAL_STATUS_BY_VARIANT[calVariant];
-    const detail = (() => {
-      const current = DETAIL[state.selectedDay];
-
-      // Exact match
-      if (
-        current &&
-        current.variant.toLowerCase().includes(
-          state.selectedVariant.toLowerCase()
-        )
-      ) {
-        return current;
-      }
-
-      // Find first detail belonging to selected variant
-      const fallback = Object.values(DETAIL).find((d) =>
-        d.variant.toLowerCase().includes(state.selectedVariant.toLowerCase())
-      );
-
-      return fallback ?? DETAIL[12];
-    })();
-
+    const detail = getDayDetail(calVariant, state.selectedDay);
+    const poNotifyKey = `${calVariant}-${detail.po.number}`;
 
     return {
       ...state,
       set,
       calVariant,
       calStatuses,
-      variantLabel: VARIANT_LABEL[state.selectedVariant] ?? VARIANT_LABEL[calVariant],
+      variantLabel: VARIANT_LABEL[state.selectedVariant],
       detail,
       dayStatus: calStatuses[state.selectedDay] ?? "green",
+      poNotifyKey,
       filteredAlerts:
         state.selectedVariant === "all"
           ? ALERTS
-          : ALERTS.filter((a) => a.variants.includes(state.selectedVariant)),
+          : ALERTS.filter((a) => a.variants.includes(calVariant as never)),
       activeAlert: ALERTS.find((a) => a.id === state.activeAlertId),
       notifyPoVendor: () =>
-        setState((s) => ({ ...s, poNotified: { ...s.poNotified, [s.selectedDay]: true } })),
+        setState((s) => ({ ...s, poNotified: { ...s.poNotified, [poNotifyKey]: true } })),
       repushAlert: (id: string) =>
         setState((s) => ({ ...s, repushed: { ...s.repushed, [id]: true } })),
     };
