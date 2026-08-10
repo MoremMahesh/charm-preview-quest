@@ -180,7 +180,7 @@ function buildChart(variantKey: VariantKey): ChartPoint[] {
         day,
         plan: parts.reduce((s, p) => s + p.plan, 0),
         ach: parts.reduce((s, p) => s + p.ach, 0),
-        status: CAL_STATUS_BY_VARIANT.all[day],
+        status: CAL_STATUS_BY_VARIANT.all[day] ?? "green",
         loss: parts.reduce((s, p) => s + p.loss, 0),
       };
     }
@@ -412,7 +412,7 @@ function buildAlerts(): Alert[] {
     const ambers = riskDays(v, "amber");
 
     if (reds.length) {
-      const day = reds[0];
+      const day = reds[0]!;
       const a = atp(v, day);
       list.push({
         id: `${v}-red`,
@@ -444,7 +444,7 @@ function buildAlerts(): Alert[] {
     }
 
     if (ambers.length) {
-      const day = ambers[0];
+      const day = ambers[0]!;
       const a = atp(v, day);
       list.push({
         id: `${v}-amber`,
